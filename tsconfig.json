@@ -12,7 +12,11 @@
       {
         "name": "typescript-plugin-css-modules"
       }
-    ]
+    ],
+    "baseUrl": ".",
+    "paths": {
+      "@styles/*": ["src/styles/*"],
+    }
   },
   "include": ["src/**/*"]
 }

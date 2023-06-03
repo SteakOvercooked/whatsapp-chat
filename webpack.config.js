@@ -36,6 +36,7 @@ module.exports = {
   devtool: 'eval-source-map',
   devServer: {
     port: 3000,
+    historyApiFallback: true,
     static: {
       directory: path.resolve(__dirname, 'src/static'),
     },
@@ -43,11 +44,17 @@ module.exports = {
   entry: {
     index: path.resolve(__dirname, 'src/index.tsx'),
   },
+  output: {
+    publicPath: '/',
+  },
   module: {
     rules: [tsxRule, cssRule],
   },
   resolve: {
     extensions: ['.ts', '.js', '.tsx', '.scss'],
+    alias: {
+      '@styles': path.resolve(__dirname, 'src/styles'),
+    },
   },
   plugins: [
     new MiniCssExtractPlugin({
