@@ -16,6 +16,9 @@
     "baseUrl": ".",
     "paths": {
       "@styles/*": ["src/styles/*"],
+      "@api/*": ["src/api/*"],
+      "@hooks/*": ["src/hooks/*"],
+      "@store/*": ["src/store/*"]
     }
   },
   "include": ["src/**/*"]

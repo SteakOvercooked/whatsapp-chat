@@ -1,15 +1,15 @@
 import { z } from 'zod';
 
 export const schema = z.object({
-  idInstance: z
+  id: z
     .string()
     .min(1, 'Это поле не может быть пустым!')
-    .regex(/^[0-9]+$/, 'Поле содержит только цифры!')
+    .regex(/^[0-9]+$/, 'Поле должно содержать только цифры!')
     .default(''),
-  apiTokenInstance: z
+  apiToken: z
     .string()
     .min(1, 'Это поле не может быть пустым!')
-    .regex(/^[a-z0-9]+$/, 'Поле содержит буквы a-z и цифры!')
+    .regex(/^[a-z0-9]+$/, 'Поле должно содержать буквы a-z и цифры!')
     .default(''),
 });
 

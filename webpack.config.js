@@ -54,6 +54,9 @@ module.exports = {
     extensions: ['.ts', '.js', '.tsx', '.scss'],
     alias: {
       '@styles': path.resolve(__dirname, 'src/styles'),
+      '@api': path.resolve(__dirname, 'src/api'),
+      '@hooks': path.resolve(__dirname, 'src/hooks'),
+      '@store': path.resolve(__dirname, 'src/store'),
     },
   },
   plugins: [
