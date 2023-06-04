@@ -1,0 +1,33 @@
+@use './vars';
+
+%button {
+  text-transform: none;
+  min-width: 150px;
+}
+
+.buttonPrimary {
+  @extend %button;
+  background-color: vars.$green-primary;
+  color: vars.$white-primary;
+
+  &:disabled {
+    background-color: rgba(vars.$green-primary, .6);
+    color: vars.$white-darker;
+  }
+
+  &:hover {
+    background-color: vars.$green-darker;
+  }
+}
+
+.textField {
+  margin-bottom: vars.$form-spacing;
+
+  :global .MuiFormHelperText-root {
+    letter-spacing: normal;
+  }
+
+  fieldset {
+    border-color: rgba(0,0,0,0.4);
+  }
+}

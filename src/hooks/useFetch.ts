@@ -6,14 +6,20 @@ type FetchingState<T> = {
   error: string | null;
 };
 type Validate<T> = (result: T) => { error: string | null };
-type MakeFetch<TReturn> = (validate?: Validate<TReturn>) => void;
-type FetchComponents<T> = [makeFetch: MakeFetch<T>, state: FetchingState<T>];
+type MakeFetch<TArgs extends any[], TReturn> = (
+  validate?: Validate<TReturn>,
+  ...args: TArgs
+) => void;
+type FetchComponents<TArgs extends any[], TReturn> = [
+  makeFetch: MakeFetch<TArgs, TReturn>,
+  state: FetchingState<TReturn>
+];
 type Dependencies = Parameters<typeof useEffect>[1];
 
-const useFetch = <TReturn>(
-  fn: () => Promise<TReturn>,
+const useFetch = <TArgs extends any[], TReturn>(
+  fn: (...args: TArgs) => Promise<TReturn>,
   deps?: Dependencies
-): FetchComponents<TReturn> => {
+): FetchComponents<TArgs, TReturn> => {
   const shouldUpdate = useRef<boolean | null>(false);
   const [fetchingState, setFetchingState] = useState<FetchingState<TReturn>>({
     data: null,
@@ -28,11 +34,13 @@ const useFetch = <TReturn>(
     };
   }, deps);
 
-  const makeFetch: MakeFetch<TReturn> = async (validate) => {
+  const makeFetch: MakeFetch<TArgs, TReturn> = async (validate, ...args: TArgs) => {
+    console.log('bout to make call');
+
     let fetchResult: FetchingState<TReturn> = { data: null, loading: true, error: null };
     try {
       setFetchingState(fetchResult);
-      const result = await fn();
+      const result = await fn(...args);
       const error = validate && validate(result).error;
       if (error) fetchResult = { ...fetchResult, error };
       else fetchResult = { ...fetchResult, data: result };
