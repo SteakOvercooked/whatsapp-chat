@@ -1,12 +1,7 @@
 @use './vars';
 
-%button {
-  text-transform: none;
-  min-width: 150px;
-}
-
 .buttonPrimary {
-  @extend %button;
+  text-transform: none;
   background-color: vars.$green-primary;
   color: vars.$white-primary;
 
@@ -20,6 +15,16 @@
   }
 }
 
+.buttonSend {
+  :global .MuiButton-endIcon {
+    margin: 0;
+  }
+
+  :global .MuiSvgIcon-root {
+    font-size: 1.5rem;
+  }
+}
+
 .textField {
   margin-bottom: vars.$form-spacing;
 
@@ -30,4 +35,11 @@
   fieldset {
     border-color: rgba(0,0,0,0.4);
   }
+}
+
+.input {
+  margin-right: 10px;
+  background-color: white;
+  border-radius: 4px;
+  padding: 0 10px;
 }

@@ -1,0 +1,34 @@
+.messageBlock {
+  width: 100%;
+  display: flex;
+  margin-bottom: 10px;
+  justify-content: flex-start;
+  font-family: 'Open Sans';
+}
+
+.own {
+  justify-content: flex-end;
+
+  .message {
+    background-color: #f5ffc0;
+  }
+}
+
+.message {
+  max-width: 25rem;
+  padding: 5px 8px;
+  background-color: white;
+  border-radius: 4px;
+}
+
+.messageContent {
+  overflow-wrap: break-word;
+}
+
+.time {
+  color: #8b8b8b;
+  margin-left: 5px;
+  float: right;
+  margin-top: 7px;
+  font-size: .8rem;
+}

@@ -1,0 +1,8 @@
+@use '@styles/utils';
+
+.chatContainer {
+  @extend .centered-container;
+  height: calc(100% - 50px);
+  flex-direction: column;
+  width: clamp(600px, 70%, 800px);
+}
