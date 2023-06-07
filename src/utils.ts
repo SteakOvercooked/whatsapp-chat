@@ -1,5 +1,5 @@
 import { ChatID, GreenApiResponse } from '@api/api_types';
-import { ChatMessageProps } from './routes/Chat/ChatMessage';
+import type { MessageProps } from './routes/Chat/Message';
 
 export function getChatID(id: number): ChatID {
   return `${id}@c.us`;
@@ -17,7 +17,7 @@ type ReceivedMessageInfo = {
   receiptId: number;
   isInCurrentChat: boolean;
   type: string;
-  message: ChatMessageProps;
+  message: MessageProps;
 };
 type Notification =
   | {
@@ -34,16 +34,24 @@ export function processNotification(
   notification: GreenApiResponse<'receiveNotification'>
 ): Notification {
   if (notification === null) return { didReceive: false, messageInfo: null };
-  const body = notification.body;
+  const { messageData, senderData, timestamp } = notification.body;
   const messageInfo: ReceivedMessageInfo = {
     receiptId: notification.receiptId,
-    type: body.messageData.typeMessage,
-    isInCurrentChat: body.senderData.chatId === getChatID(id),
+    type: messageData.typeMessage,
+    isInCurrentChat: senderData.chatId === getChatID(id),
     message: {
       owner: 'contact',
-      timestamp: body.timestamp,
-      text: body.messageData.textMessageData.textMessage,
+      timestamp: timestamp,
+      text:
+        messageData.typeMessage === 'textMessage' ? messageData.textMessageData.textMessage : '',
     },
   };
   return { didReceive: true, messageInfo };
+}
+
+export function purifyPhone(phone: string): string {
+  let pure = '';
+  for (let char = 0; char < phone.length; char++)
+    if (phone.charCodeAt(char) >= 48 && phone.charCodeAt(char) <= 57) pure += phone[char];
+  return pure;
 }

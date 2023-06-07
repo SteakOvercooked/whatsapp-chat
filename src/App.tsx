@@ -1,6 +1,7 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { Login } from './routes/Login';
 import { CreateChat } from './routes/ChatCreation';
+import { Chat } from './routes/Chat';
 
 export const App = () => {
   return (
@@ -11,7 +12,7 @@ export const App = () => {
         <Route path='/chat'>
           <Route index element={<CreateChat />} />
           <Route path='create' element={<CreateChat />} />
-          <Route path=':chatId' element={<div>Connected to chat!</div>} />
+          <Route path=':id' element={<Chat />} />
         </Route>
       </Routes>
     </Router>

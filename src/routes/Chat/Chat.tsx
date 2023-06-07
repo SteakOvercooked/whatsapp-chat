@@ -1,20 +1,20 @@
 import chatStyles from './chat.module.scss';
-import { ChatControls } from './ChatControls';
-import { ChatWindow } from './ChatWindow';
-import { ChatHeader } from './ChatHeader';
-import type { ChatMessageProps } from './ChatMessage';
+import { Controls } from './Controls';
+import { Window } from './Window';
+import { Header } from './Header';
+import type { MessageProps } from './Message';
 import useFetch from '@hooks/useFetch';
 import usePolling from '@hooks/usePolling';
 import { GreenApi } from '@api/green_api';
-// import { RootState } from '@store/store';
-// import { useSelector } from 'react-redux';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { processNotification } from '../../utils';
+import { Loading } from './Loading';
 
 export const Chat = () => {
   const { id } = useParams();
-  const [messages, setMessages] = useState<ChatMessageProps[]>([]);
+  const navigate = useNavigate();
+  const [messages, setMessages] = useState<MessageProps[]>([]);
   const [fetchContactInfo, contactInfoState] = useFetch(GreenApi.getContactInfo, {
     deps: [],
     init: {
@@ -37,13 +37,13 @@ export const Chat = () => {
   });
 
   useEffect(() => {
-    GreenApi.setInstance('1101827286', '59a78a26e66b41a9a432b2f195f8600fe569a91ec3c1462bb3');
+    if (!GreenApi.isInstantiated()) navigate('../../', { replace: true });
     fetchContactInfo(parseInt(id!));
   }, []);
 
   const onSend = (message: string) => {
     sendMessage(parseInt(id!), message);
-    const chatMessage: ChatMessageProps = {
+    const chatMessage: MessageProps = {
       owner: 'client',
       timestamp: Date.now(),
       text: message,
@@ -53,15 +53,15 @@ export const Chat = () => {
 
   return (
     <div className={chatStyles.chatContainer}>
-      {contactInfoState.loading && <span>Loading</span>}
+      {contactInfoState.loading && <Loading />}
       {!contactInfoState.loading && !contactInfoState.error && (
         <>
-          <ChatHeader
+          <Header
             avatar={contactInfoState.data!.data!.avatar}
             name={contactInfoState.data!.data!.name}
           />
-          <ChatWindow messages={messages} />
-          <ChatControls onSend={onSend} />
+          <Window messages={messages} />
+          <Controls onSend={onSend} />
         </>
       )}
     </div>

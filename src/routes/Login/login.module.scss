@@ -1,0 +1,12 @@
+@use '@styles/utils';
+
+.formContainer {
+  @extend .centered-container;
+  height: 100%;
+  width: clamp(300px, 70%, 600px);
+}
+
+.form {
+  @extend .shadowed-container;
+  width: 100%;
+}

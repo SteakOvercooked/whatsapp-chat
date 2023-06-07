@@ -8,17 +8,18 @@
     "jsx": "react-jsx",
     "esModuleInterop": true,
     "skipLibCheck": true,
-    "plugins": [
-      {
-        "name": "typescript-plugin-css-modules"
-      }
-    ],
+    // removed since not working with at-rules
+    // "plugins": [
+    //   {
+    //     "name": "typescript-plugin-css-modules"
+    //   }
+    // ],
     "baseUrl": ".",
     "paths": {
       "@styles/*": ["src/styles/*"],
       "@api/*": ["src/api/*"],
       "@hooks/*": ["src/hooks/*"],
-      "@store/*": ["src/store/*"]
+      "@store/*": ["src/store/*"],
     }
   },
   "include": ["src/**/*"]

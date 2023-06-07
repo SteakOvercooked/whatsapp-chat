@@ -1,7 +1,7 @@
 @use '@styles/vars';
 
 .wrapper {
-  background-color: #fff;
+  background-color: vars.$green-primary;
   padding: 4px;
   border-radius: 4px;
   margin: 15px 0;
@@ -15,7 +15,7 @@
 .avatarDefault {
   height: 40px;
   width: 40px;
-  margin-right: 10px;
+  margin: 0 10px;
 }
 
 .avatar {
@@ -24,6 +24,7 @@
 }
 
 .name {
+  color: white;
   font-size: 1rem;
   font-family: 'Open Sans';
 }

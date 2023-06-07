@@ -1,18 +1,19 @@
 import { Button, Input } from '@mui/material';
 import classnames from 'classnames';
 import uiElementsStyles from '@styles/ui_elements.module.scss';
-import controlStyles from './chat_controls.module.scss';
+import controlStyles from './controls.module.scss';
 import SendRoundedIcon from '@mui/icons-material/SendRounded';
 import { useState } from 'react';
 
-type ChatControlsProps = {
+type ControlsProps = {
   onSend: (text: string) => void;
 };
 
-export const ChatControls = ({ onSend }: ChatControlsProps) => {
+export const Controls = ({ onSend }: ControlsProps) => {
   const [message, setMessage] = useState('');
 
   const onClick = () => {
+    if (message === '') return;
     onSend(message);
     setMessage('');
   };

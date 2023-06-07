@@ -1,8 +1,8 @@
 import type { ContactInfo } from '@api/api_types';
-import headerStyles from './chat_header.module.scss';
+import headerStyles from './header.module.scss';
 import AccountCircleRoundedIcon from '@mui/icons-material/AccountCircleRounded';
 
-export const ChatHeader = ({ name, avatar }: ContactInfo) => {
+export const Header = ({ name, avatar }: ContactInfo) => {
   return (
     <div className={headerStyles.wrapper}>
       {avatar !== '' && <img alt='Аватар контакта' src={avatar} className={headerStyles.avatar} />}

@@ -1,22 +1,26 @@
 import { methods, ApiMethod } from './methods';
-import type { ContactInfo, GreenApiResponse } from './green_api_response';
+import type { GreenApiResponse } from './api_types';
 import axios from 'axios';
+import { getChatID } from '../utils';
 
-type PhoneNumber = number;
-type ChatID = `${PhoneNumber}@c.us`;
-
-type CommonResponse = {
-  success: boolean;
-  error: string | null;
+type ResponseSuccessfull = {
+  success: true;
+  error: null;
 };
-
-type PayloadResponse<T> = CommonResponse & {
-  data: T | null;
+type ResponseFailed = {
+  success: false;
+  error: string;
 };
+type CommonResponse = ResponseFailed | ResponseSuccessfull;
+
+type WithData<TData, TMerged> = TMerged & { data: TData };
+type PayloadResponse<TPayload> =
+  | WithData<null, ResponseFailed>
+  | WithData<TPayload, ResponseSuccessfull>;
 
 const API_ROOT = 'https://api.green-api.com';
 
-function processError(err: unknown): CommonResponse {
+function processError(err: unknown): ResponseFailed {
   if (axios.isAxiosError(err) && err.response) {
     const { status, statusText } = err.response;
     return { success: false, error: `${status}: ${statusText}` };
@@ -26,8 +30,8 @@ function processError(err: unknown): CommonResponse {
 }
 
 export class GreenApi {
-  private static id: string | null;
-  private static apiToken: string | null;
+  private static id: string | null = null;
+  private static apiToken: string | null = null;
   static setInstance(id: string | null, apiToken: string | null) {
     GreenApi.id = id;
     GreenApi.apiToken = apiToken;
@@ -42,6 +46,10 @@ export class GreenApi {
     const apiToken = GreenApi.apiToken;
     if (!apiToken || !id) throw new Error('Нет данных для создания запросов!');
     return new URL(`waInstance${id}/${methods[method]}/${apiToken}`, API_ROOT).href;
+  }
+
+  static isInstantiated(): boolean {
+    return GreenApi.apiToken !== null && GreenApi.id !== null;
   }
 
   static async isAccountAvailable(): Promise<CommonResponse> {
@@ -61,7 +69,7 @@ export class GreenApi {
     }
   }
 
-  static async checkWhatsApp(phoneNumber: PhoneNumber): Promise<CommonResponse> {
+  static async checkWhatsApp(phoneNumber: number): Promise<CommonResponse> {
     try {
       const result = await axios.post<GreenApiResponse<'checkWhatsApp'>>(
         GreenApi.endpoint('checkWhatsApp'),
@@ -79,16 +87,58 @@ export class GreenApi {
     }
   }
 
-  static async getContactInfo(chatId: ChatID): Promise<PayloadResponse<ContactInfo>> {
+  static async getContactInfo(
+    id: number
+  ): Promise<PayloadResponse<GreenApiResponse<'getContactInfo'>>> {
     try {
-      const result = await axios.post<GreenApiResponse<'getContactInfo'>>(
+      const { data } = await axios.post<GreenApiResponse<'getContactInfo'>>(
         GreenApi.endpoint('getContactInfo'),
-        { chatId }
+        { chatId: getChatID(id) }
       );
-      return { success: true, data: result.data, error: null };
+      return { success: true, data, error: null };
     } catch (error) {
       const commonResponse = processError(error);
       return { ...commonResponse, data: null };
+    }
+  }
+
+  static async sendMessage(id: number, message: string): Promise<CommonResponse> {
+    try {
+      await axios.post<GreenApiResponse<'sendMessage'>>(GreenApi.endpoint('sendMessage'), {
+        chatId: getChatID(id),
+        message,
+      });
+      return { success: true, error: null };
+    } catch (error) {
+      return processError(error);
+    }
+  }
+
+  static async receiveNotification(): Promise<
+    PayloadResponse<GreenApiResponse<'receiveNotification'>>
+  > {
+    try {
+      const { data } = await axios.get<GreenApiResponse<'receiveNotification'>>(
+        GreenApi.endpoint('receiveNotification')
+      );
+      return { success: true, data, error: null };
+    } catch (error) {
+      const commonResponse = processError(error);
+      return { ...commonResponse, data: null };
+    }
+  }
+
+  static async deleteNotification(receiptId: number): Promise<CommonResponse> {
+    try {
+      const standardEndpoint = GreenApi.endpoint('deleteNotification');
+      const { data } = await axios.delete<GreenApiResponse<'deleteNotification'>>(
+        standardEndpoint + `/${receiptId}`
+      );
+      if (!data.result)
+        throw new Error(`Не удалось удалить уведомление о сообщение, receiptId: ${receiptId}`);
+      return { success: true, error: null };
+    } catch (error) {
+      return processError(error);
     }
   }
 }

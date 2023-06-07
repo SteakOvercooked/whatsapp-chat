@@ -6,7 +6,7 @@
   color: vars.$white-primary;
 
   &:disabled {
-    background-color: rgba(vars.$green-primary, .6);
+    background-color: rgba(vars.$green-primary, .8);
     color: vars.$white-darker;
   }
 
@@ -16,6 +16,7 @@
 }
 
 .buttonSend {
+  
   :global .MuiButton-endIcon {
     margin: 0;
   }
